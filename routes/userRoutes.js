@@ -1,4 +1,4 @@
-const { register, login, update, findContact, getUserDataById, getUserDataByEmail, searchUserByQuery, getAllUsers } = require('../controllers/userController')
+const { register, login, update, findContact, getUserDataById, getUserDataByEmail, searchUserByQuery, getAllUsers, getContacts } = require('../controllers/userController')
 
 const router = require('express').Router();
 
@@ -17,5 +17,8 @@ router.post('/get-auth', getUserDataByEmail);
 router.post('/search', searchUserByQuery);
 
 router.post('/get-all', getAllUsers);
+
+router.post('/contacts/:userId', getContacts);
+
 
 module.exports = router

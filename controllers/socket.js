@@ -16,7 +16,6 @@ const addUser = (userId, socketId) => {
 }
 
 const userDisconnect = (socketId) => {
-    console.log('socketId', socketId)
     if (users.length > 0) {
         let removedUser = users.map((user) => {
             if (user.socketId == socketId) {
@@ -40,14 +39,6 @@ module.exports = (server, clientUrl) => {
         },
     });
 
-// const io = socket(global.globalThis.server, {
-//     cors: {
-//         origin: process.env.CLIENT_URL,
-//         credentials: true 
-//     }
-// })
-// console.log('io', io)
-
     io.on('connection', (socket) => {
         // when user connect
         io.emit('Connect to socket server success!')
@@ -67,7 +58,6 @@ module.exports = (server, clientUrl) => {
         // join room chat, send and get private messages
         socket.on('joinsRoom', function(room) {
             socket.join(room);
-            console.log(`join to ${room} success`);
             
         });
 
@@ -89,12 +79,11 @@ module.exports = (server, clientUrl) => {
                 } catch (err) {
                     console.log(err);
                 };
-        };
+            };
         });
 
         socket.on('deliveredMessage', async ({ sender, text, conversationId, messageId, receivers, status, createdAt, updatedAt }) => {
             if (!conversationId || !sender || !text || !receivers || !status || !messageId || !createdAt || !updatedAt) {
-                console.log('An error has been encountered')
             } else {
                 try {
                     io.sockets.in(conversationId).emit('updateDeliveredMessage', {  

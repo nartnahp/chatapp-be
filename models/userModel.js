@@ -19,7 +19,7 @@ const userSchema = new mongoose.Schema({
         default: '/images/default-avatar.png'
     },
     bio: String,
-    contact: String
+    contacts: Array
 }, {
     collection: 'Users',
     timestamps: true

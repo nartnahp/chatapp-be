@@ -9,9 +9,9 @@ module.exports.register = async (req, res, next) => {
             res.status(403);
             return res.json({ mess: 'Account is already in used' });
         }
-        // const hashedPassword = await brcypt.hash(password, 10)
-        const user = await Users.create({ email })
-        res.status(200)
+        // const hashedPassword =  await brcypt.hash(password, 10)
+        const user = await Users.create({ email });
+        if (user._id) res.status(200);
         return res.json({ user })
     } catch (error) {
         next(error)
@@ -69,7 +69,7 @@ module.exports.update = async (req, res, next) => {
             backgroundImage,
             avatar,
             bio,
-            contact
+            contacts
         } = req.body;
         const getUserToUpdate = await Users.findOne({ email });
         if (!getUserToUpdate) {
@@ -88,7 +88,8 @@ module.exports.update = async (req, res, next) => {
             backgroundImage: backgroundImage,
             avatar: avatar,
             bio: bio,
-            contact: contact
+        }, $push:{
+            contacts: contacts
         }});
         if (!updatedUser) {
             res.status(500);
@@ -107,10 +108,23 @@ module.exports.update = async (req, res, next) => {
 }
 
 module.exports.findContact = async (req, res) => {
-    const userName = req.body;
+    const email = req.body;
     try {
-        const contact = await Users.findOne(userName);
-        res.status(200).json(contact);
+        const contact = await Users.findOne(email);
+        if (contact) res.status(200).json(contact);
+    } catch (err) {
+		res.status(500).json(err);
+    }
+}
+
+module.exports.getContacts = async (req, res) => {
+    const id = req.params.userId;
+    try {
+        const user = await Users.findOne({ _id: id });
+        if (user) {
+            const contacts = await Users.find({ _id: { $in:user.contacts }})
+            if (contacts) res.status(200).json(contacts);
+        }
     } catch (err) {
 		res.status(500).json(err);
     }
@@ -120,7 +134,7 @@ module.exports.getUserDataById = async (req, res) => {
     const id = req.body;
     try {
         const userData = await Users.findOne(id);
-        res.status(200).json(userData);
+        if (userData) res.status(200).json(userData);
     } catch (err) {
 		res.status(500).json(err);
     }
@@ -128,10 +142,9 @@ module.exports.getUserDataById = async (req, res) => {
 
 module.exports.getUserDataByEmail = async (req, res) => {
     const email = req.body;
-    console.log('email', email)
     try {
         const user = await Users.findOne(email);
-        res.status(200).json({user});
+        if (user) res.status(200).json({user});
     } catch (err) {
 		res.status(500).json(err);
     }
@@ -141,7 +154,7 @@ module.exports.searchUserByQuery = async (req, res) => {
     const q = req.body;
     try {
         const result = await Users.findOne(q);
-        res.status(200).json(result);
+        if (result) res.status(200).json(result);
     } catch (err) {
 		res.status(500).json(err);
     }

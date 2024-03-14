@@ -17,9 +17,6 @@ const messageSchema = new mongoose.Schema(
 		receivers: {
 			type: Array
 		},
-		seen: {
-			type: Array
-		}
 	},
 	{ timestamps: true }
 )

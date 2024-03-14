@@ -2,13 +2,19 @@ const mongoose = require('mongoose')
 
 const conversationSchema = new mongoose.Schema(
     {   
-        chanelName: {
+        displayName: {
             type: String,
         },
         members: {
             type: Array,
         },
+        messages: {
+            type: Array,
+        },
         admins: {
+            type: Array,
+        },
+        avatar: {
             type: Array,
         },
         createdBy: {
@@ -18,7 +24,8 @@ const conversationSchema = new mongoose.Schema(
             type: String,
         },
         activityTime: {
-            type: String
+            type: String,
+            default: new Date().toISOString(),
         }
     },
     { timestamps: true}
